@@ -14,6 +14,8 @@ import openai
 
 # from langchain.agents import create_pandas_dataframe_agent
 from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
+
+from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -414,7 +416,13 @@ def predict(df, prompt):
         fig = chart.plot(prompt, return_fig=True)
         output = show_graph_card(graph=dcc.Graph(figure=fig), code=chart.last_run_code)
     else:
-        agent = create_pandas_dataframe_agent(OpenAI(temperature=0), df, verbose=False)
+        # agent = create_pandas_dataframe_agent(OpenAI(temperature=0), df, verbose=False)
+        # agent = create_pandas_dataframe_agent(
+        #     ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0), df, verbose=False
+        # )
+        agent = create_pandas_dataframe_agent(
+            ChatOpenAI(model_name="gpt-4", temperature=0), df, verbose=False
+        )
         result_text = agent.run(prompt)
         output = show_text_card(result_text)
     return output
